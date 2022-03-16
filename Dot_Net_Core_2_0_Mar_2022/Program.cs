@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Text.RegularExpressions;
 
 namespace Dot_Net_Core_2_0_Mar_2022
@@ -24,15 +25,74 @@ namespace Dot_Net_Core_2_0_Mar_2022
             // PrintIsValid("cccccccccat", @"^c*at$");
             // PrintIsValid("sat", @"^s(e|i)t$"); // set or sit
 
-            ConsoleKeyInfo cki = Console.ReadKey(true);
-            if (cki.Key == ConsoleKey.Escape)
+            //ConsoleKeyInfo cki = Console.ReadKey(true);
+            //if (cki.Key == ConsoleKey.Escape)
+            //{
+            //    Console.WriteLine("You have pressed  Escape");
+            //}
+            //if (cki.Key == ConsoleKey.Enter)
+            //{
+            //    Console.WriteLine("You have pressed  Enter");
+            //}
+
+            //BigInteger big1 = new BigInteger(double.MaxValue);
+            //BigInteger big2 = new BigInteger(double.MaxValue);
+
+            //BigInteger res = BigInteger.Add(big1, big2);
+
+            //Console.WriteLine(res.ToString());
+
+            var big = BigInteger.Parse("320560000000000000000");
+
+            string strBig = big.ToString("N0");
+            Console.WriteLine(strBig);
+
+            string[] numbersByThree = strBig.Split(',');
+
+            ThreeDigitsToWords(numbersByThree[0]);
+        }
+
+        static void ThreeDigitsToWords(string number)
+        {
+            number = number.PadLeft(3, '0');
+
+            // Console.WriteLine(number);
+            string res = string.Empty;
+
+            var unitsMap = new[] {
+                "", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
+                "ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen",
+                "seventeen", "eighteen", "nineteen"
+            };
+            var tensMap = new[] {
+                "", "ten", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninty"
+            };
+            // 316
+            int ind;
+            if (number[0] != '0')
             {
-                Console.WriteLine("You have pressed  Escape");
+                ind = Convert.ToInt32(number[0].ToString());
+                res += $"{unitsMap[ind]} hundred"; 
             }
-            if (cki.Key == ConsoleKey.Enter)
+
+            if (number[1] == '1')
             {
-                Console.WriteLine("You have pressed  Enter");
+                ind = Convert.ToInt32(number[1].ToString() + number[2].ToString());
+                res += $" {unitsMap[ind]} ";
             }
+            else
+            {
+                ind = Convert.ToInt32(number[1].ToString());
+                string tens = tensMap[ind];
+
+                ind = Convert.ToInt32(number[2].ToString());
+                string afterTen = number[2] == '0' ? "" :
+                    unitsMap[ind];
+
+                res += $" {tens} {afterTen}";
+            }
+
+            Console.WriteLine($"res: {res}");
         }
 
         static void PrintIsValid(string value, string re)
