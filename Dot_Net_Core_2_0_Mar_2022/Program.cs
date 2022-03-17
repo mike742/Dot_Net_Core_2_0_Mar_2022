@@ -42,17 +42,50 @@ namespace Dot_Net_Core_2_0_Mar_2022
 
             //Console.WriteLine(res.ToString());
 
-            var big = BigInteger.Parse("320560000000000000000");
+            var big = BigInteger.Parse("123456789");
 
             string strBig = big.ToString("N0");
             Console.WriteLine(strBig);
 
             string[] numbersByThree = strBig.Split(',');
 
-            ThreeDigitsToWords(numbersByThree[0]);
+            // ThreeDigitsToWords(numbersByThree[0]);
+            string result = string.Empty;
+
+            for (int i = 0; i < numbersByThree.Length; ++i)
+            {
+                if (numbersByThree[i] != "000")
+                {
+                    result += string.IsNullOrEmpty(result) ? "" : " "; 
+                    result += ThreeDigitsToWords(numbersByThree[i]);
+                    result += " " + LargeNumberToWord(numbersByThree.Length - i - 1);
+                }
+            }
+
+            Console.WriteLine($"result = {result}");
+
+
+            // Extension methods
+            string str = "hello extension method!";
+            // Console.WriteLine(  StringHelper.FlipFirstLetterCase(str) );
+
+            Console.WriteLine(str.FlipFirstLetterCase());
+            // str.FlipFirstLetterCase();
         }
 
-        static void ThreeDigitsToWords(string number)
+        public static string LargeNumberToWord(int value)
+        {
+            string[] largeMap = new[] {
+            "", "thousand", "million", "billion",
+            "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion",
+            "nonillion", "decillion", "undecillion", "duodecillion", "tredecillion",
+            "Quattuordecillion", "Quindecillion", "Sexdecillion", "Septdecillion",
+            "Octodecillion", "Novemdecillion", "Vigintillion"
+            };
+            return largeMap[value];
+        }
+
+        static string ThreeDigitsToWords(string number)
         {
             number = number.PadLeft(3, '0');
 
@@ -92,7 +125,8 @@ namespace Dot_Net_Core_2_0_Mar_2022
                 res += $" {tens} {afterTen}";
             }
 
-            Console.WriteLine($"res: {res}");
+            // Console.WriteLine($"res: {res}");
+            return res;
         }
 
         static void PrintIsValid(string value, string re)
