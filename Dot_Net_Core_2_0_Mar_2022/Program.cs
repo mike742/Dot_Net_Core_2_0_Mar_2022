@@ -1,6 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Numerics;
 using System.Text.RegularExpressions;
+using System.Text.Json;
+using System.Xml.Serialization;
 
 namespace Dot_Net_Core_2_0_Mar_2022
 {
@@ -42,6 +45,8 @@ namespace Dot_Net_Core_2_0_Mar_2022
 
             //Console.WriteLine(res.ToString());
 
+
+            /*
             var big = BigInteger.Parse("123456789");
 
             string strBig = big.ToString("N0");
@@ -71,7 +76,101 @@ namespace Dot_Net_Core_2_0_Mar_2022
 
             Console.WriteLine(str.FlipFirstLetterCase());
             // str.FlipFirstLetterCase();
+
+            */
+
+            /*
+            var t1 = Tuple.Create(101, "Mark Smith", "mark.smith@gmail.com");
+            Console.WriteLine( $"{ nameof(t1) } : {t1.Item1} {t1.Item2} {t1.Item3}" );
+            Console.WriteLine( t1.ToString() );
+
+            (double, int) t2 = (3.14, 12);
+            Console.WriteLine( $"{t2.Item1} {t2.Item2}" );
+
+            (int id, string fullName, string email) t3 = (102, "Tracy Doe", "tracy@gmail.com");
+            Console.WriteLine(t3.ToString());
+
+            int id = 103; string fullName = "Lucy"; string email = "lucy@gmail.com";
+            t3 = (id, fullName, email);
+
+            Console.WriteLine( $"{t3.id} {t3.fullName} {t3.email}" );
+
+            (int a, int b) l = (15, 100);
+            (int a, int b) r = (5, 100);
+
+            Console.WriteLine( l == r );
+            */
+
+            /*
+            string path = @"d:\tmp\file1.txt";
+            Console.WriteLine( $"exists = { File.Exists(path) }" );
+
+            string fileName = Path.GetFileName(path);
+            Console.WriteLine($"file name is {fileName}");
+
+            string fileExt = Path.GetExtension(path);
+            Console.WriteLine($"ext is {fileExt}");
+
+            string fileNameWithoutExt = Path.GetFileNameWithoutExtension(path);
+            Console.WriteLine($"fileNameWithoutExt is {fileNameWithoutExt}");
+
+            string root = Path.GetPathRoot(path);
+            Console.WriteLine($"root is {root}");
+
+            string dirName = Path.GetDirectoryName(path);
+            Console.WriteLine($"dir name is {dirName}");
+
+            string[] pathArr = { "c:", "Mar_2022", "dot net 2.0", "examples", "content", "file2.cs" };
+            string path2 = Path.Combine(pathArr);
+            Console.WriteLine($"path2 is {path2}");
+
+            Console.WriteLine("====================================");
+
+            for (int i = 0; i < 10; ++i)
+            {
+                string randomName = Path.GetTempFileName();
+                string tempPath = Path.GetTempPath();
+                Console.WriteLine( Path.Combine( tempPath, randomName));
+            }
+            */
+
+            // Wen, Mar 23
+
+            string path = @"d:\tmp\file1.txt";
+
+            // string content = "One\nTwo\nThree";
+            // WriteToFile(path, content);
+            
+            
+            string json = ReadFromFile(path);
+
+            Top obj = JsonSerializer.Deserialize<Top>(json);
+            // obj.PrintInfo();
+            // Console.WriteLine(res);
+            var xmlSerializer = new XmlSerializer(typeof(Top));
+
+            string xmlFile = "data.xml";
+            
+            using (FileStream stream = File.Create(xmlFile))
+            {
+                xmlSerializer.Serialize(stream, obj);
+            }
         }
+
+        public static void WriteToFile(string path, string content)
+        {
+            File.WriteAllText(path, content);
+        }
+
+        public static string ReadFromFile(string path)
+        {
+            if (File.Exists(path))
+            {
+                return File.ReadAllText(path);
+            }
+            return "File not found";
+        }
+
 
         public static string LargeNumberToWord(int value)
         {
