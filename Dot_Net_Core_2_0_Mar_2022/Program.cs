@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Xml.Serialization;
+using System.Text;
 
 namespace Dot_Net_Core_2_0_Mar_2022
 {
@@ -135,7 +136,7 @@ namespace Dot_Net_Core_2_0_Mar_2022
             */
 
             // Wen, Mar 23
-
+            /*
             string path = @"d:\tmp\file1.txt";
 
             // string content = "One\nTwo\nThree";
@@ -154,6 +155,65 @@ namespace Dot_Net_Core_2_0_Mar_2022
             using (FileStream stream = File.Create(xmlFile))
             {
                 xmlSerializer.Serialize(stream, obj);
+            }
+
+            string path2 = "data2.xml";
+            ToXmlFile(obj, path2);
+
+            string xmlContent = File.ReadAllText("XMLFile1.xml");
+            Top obj2 = FromXmlFile<Top>(xmlContent);
+
+            obj2.PrintInfo();
+            */
+
+            // Thur 24
+
+            //string secretKey = Protector.GenerateSecretKey();
+            // Console.WriteLine(secretKey);
+            string sk = "NoDHJSW?35ZMn?8J=fK?aN_PtMZN4=cp";
+
+            string card = "1234-5678-9012-3456";
+            string encriptedCard = Protector.EncryptString(sk, card);
+
+            Console.WriteLine($"Encrypted card number is {encriptedCard}");
+            Console.WriteLine($"Decrypted card number is { Protector.DecryptString(sk, encriptedCard)}");
+
+
+
+            string password = "Admin1234";
+            string passwordMD5 = Protector.toMD5(password);
+            string passwordSaltAndHashed = Protector.SaltAndHash(password);
+
+            Console.WriteLine(passwordMD5);
+            Console.WriteLine(passwordSaltAndHashed);
+
+            if (Protector.SaltAndHash("Hach2022") == passwordSaltAndHashed)
+            {
+                Console.WriteLine("Yes, you can see our information");
+            }
+            else
+            {
+                Console.WriteLine("Access denied");
+            }
+        }
+
+        public static T FromXmlFile<T>(string xml)
+        {
+            using (StringReader sr = new StringReader(xml))
+            {
+                XmlSerializer xmls = new XmlSerializer(typeof(T));
+
+                return (T)xmls.Deserialize(sr);
+            }
+        }
+
+        public static void ToXmlFile<T>(T obj, string path)
+        {
+            using (StringWriter sw = new StringWriter(new StringBuilder()))
+            {
+                XmlSerializer xmls = new XmlSerializer(typeof(T));
+                xmls.Serialize(sw, obj);
+                File.WriteAllText(path, sw.ToString());
             }
         }
 
