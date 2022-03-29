@@ -5,6 +5,8 @@ using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Xml.Serialization;
 using System.Text;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Dot_Net_Core_2_0_Mar_2022
 {
@@ -170,6 +172,7 @@ namespace Dot_Net_Core_2_0_Mar_2022
 
             //string secretKey = Protector.GenerateSecretKey();
             // Console.WriteLine(secretKey);
+            /*
             string sk = "NoDHJSW?35ZMn?8J=fK?aN_PtMZN4=cp";
 
             string card = "1234-5678-9012-3456";
@@ -194,6 +197,32 @@ namespace Dot_Net_Core_2_0_Mar_2022
             else
             {
                 Console.WriteLine("Access denied");
+            }
+            */
+
+            List<Employee> employees = new List<Employee> { 
+                new Employee { Id = 101, FirstName = "Mark", LastName = "Smith", Salary = 1800 },
+                new Employee { Id = 102, FirstName = "Lucy", LastName = "Johnson", Salary = 1950 },
+                new Employee { Id = 103, FirstName = "John", LastName = "Doe", Salary = 1500 },
+                new Employee { Id = 104, FirstName = "Tracy", LastName = "Swanson", Salary = 2100 },
+            };
+
+            using (Stream st = File.Open("Employees.dat", FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(st, employees);
+            }
+
+            using (Stream st = File.Open("Employees.dat", FileMode.Open))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+
+                var res = (List<Employee>)bf.Deserialize(st);
+
+                foreach (var emp in res)
+                {
+                    Console.WriteLine(emp);
+                }
             }
         }
 
