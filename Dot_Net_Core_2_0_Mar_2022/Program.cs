@@ -7,6 +7,8 @@ using System.Xml.Serialization;
 using System.Text;
 using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
+using Dot_Net_Core_2_0_Mar_2022.Models;
+using System.Linq;
 
 namespace Dot_Net_Core_2_0_Mar_2022
 {
@@ -199,7 +201,7 @@ namespace Dot_Net_Core_2_0_Mar_2022
                 Console.WriteLine("Access denied");
             }
             */
-
+            /*
             List<Employee> employees = new List<Employee> { 
                 new Employee { Id = 101, FirstName = "Mark", LastName = "Smith", Salary = 1800 },
                 new Employee { Id = 102, FirstName = "Lucy", LastName = "Johnson", Salary = 1950 },
@@ -223,6 +225,51 @@ namespace Dot_Net_Core_2_0_Mar_2022
                 {
                     Console.WriteLine(emp);
                 }
+            }
+            */
+
+            northwindContext context = new northwindContext();
+
+            var products = context.Products.ToList();
+
+            var productsDto = products
+                .Select(p => new ProductDto
+                {
+                    Id = p.Id,
+                    Description = p.Description,
+                    ProductCode = p.ProductCode,
+                    ProductName = p.ProductName,
+                    SupplierIds = p.SupplierIds
+                })
+                .ToList();
+
+            // BinarySerialization(productsDto, "products.dat");
+
+            var res = BinaryDesirialization<List<ProductDto>>("products.dat");
+
+
+            foreach (var p in res)
+            {
+                Console.WriteLine($"{p.Id}: {p.ProductName} {p.Description}");
+            }
+        }
+
+        public static void BinarySerialization<T>(T data, string filename)
+        {
+            using (Stream st = File.Open(filename, FileMode.Create))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                bf.Serialize(st, data);
+            }
+        }
+
+        public static T BinaryDesirialization<T>(string filename)
+        {
+            using (Stream st = File.Open(filename, FileMode.Open))
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+
+                return (T)bf.Deserialize(st);
             }
         }
 
